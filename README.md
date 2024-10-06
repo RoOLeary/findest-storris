@@ -161,10 +161,9 @@ Here's a brief overview of the important files and directories:
 - You can filter by "All Tasks", "My Tasks", "Completed Tasks" and "Incomplete Tasks".
 ```
 
-- **Task List View**: Shows all tasks fetched from the mock backend with options to add, edit, complete, or delete tasks.
-- **Edit Mode**: Allows the user to edit the task title and description with smooth transitions.
+## Screenshots
 
-You can include screenshots of your app to give users a visual preview of the UI.
+Why bother, when there's a <a href="https://move-challenge-rol.vercel.app" target="_blank">live demo</a>.
 
 ## Possible Future Improvements
 
