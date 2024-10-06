@@ -1,5 +1,5 @@
 
-# Move (Framna) Senior Frontend Developer Assignment
+# Move Agency Amsterdam | Senior Frontend Developer Assignment
 
 ## Live Demo: 
 
