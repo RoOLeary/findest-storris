@@ -150,7 +150,16 @@ Here's a brief overview of the important files and directories:
 - `src/__tests__`: Contains unit tests for components.
 
 
-## Project Screenshots
+## Using the Application
+
+```
+- Enter the details for a new task and click "Add Task". Your new task will display at the top of the filtered tasks list, as an incompete task.
+- Clicking on "Complete" will mark the task as complete. Clicking 'Undo' will mark the task incomplete.
+- Click "Edit" to update the title and description of the task. You can save or cancel these changes.
+- Click "Delete" to remove the task.
+- Click "Resyc" to fetch the latest from the api endpoint, clicking "Log out" will clear your session and return to the entry screen.
+- You can filter by "All Tasks", "My Tasks", "Completed Tasks" and "Incomplete Tasks".
+```
 
 - **Task List View**: Shows all tasks fetched from the mock backend with options to add, edit, complete, or delete tasks.
 - **Edit Mode**: Allows the user to edit the task title and description with smooth transitions.
