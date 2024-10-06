@@ -20,21 +20,43 @@ const Title = styled.h1`
 `
 const SubTitle = styled.h2`
   font-size: 16px;
-  margin-bottom: 20px;
+  margin-bottom: 5px;
   font-weight: normal;
-  padding: 10px;
-  background: white; 
-  border: 1px solid #ccc;
-  border-radius: 4px; 
   display: flex;
   align-items: center;
-  color: gray;
+  color: #000;
 
   span{
     font-weight: bold;
-    padding-left: 4px;
   }
 `
+
+const InstructionsContainer = styled.div`
+  background: white; 
+  padding: 12px; 
+  font-size: 14px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+
+  p {
+    color: lightslategrey;
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+`;
+
+const InstructionsText = styled.p`
+  font-size: 14px;
+  margin-bottom: 10px;
+  font-weight: normal;
+  display: flex;
+  align-items: center;
+  color: gray;
+`;
 
 function App() {
   const [userName, setUserName] = useState<string | null>(null)
@@ -60,8 +82,11 @@ function App() {
           <OverlayComponent onSubmitName={handleNameSubmit} />
         ) : (
           <AppContainer>
-            <Title>Simple Task Manager</Title>
-            {userName && <SubTitle>Welcome <span> {userName}</span>, you can add/edit/delete tasks using the interface below</SubTitle>}
+            <Title>Simple Task Manager:</Title>
+            <InstructionsContainer>
+              <SubTitle>Welcome {userName}!</SubTitle>
+              <InstructionsText>User the interface below to Add, Edit, Update and Delete Tasks. <br />When adding a task, you will automatically be assigned as the author. <br />Tasks can be filtered by "All", "My Tasks", "Completed", and "Incomplete".</InstructionsText>
+            </InstructionsContainer>
             <TaskForm user={userName}/>
             <TaskList />
             <Footer />
