@@ -67,7 +67,7 @@ To run this project locally, follow these steps:
    pnpm run dev
    ```
 
-   This will start the application at `http://localhost:3000/`.
+   This will start the application at `http://localhost:5173`.
 
 4. **Run the tests**:
 
