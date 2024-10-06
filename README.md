@@ -3,7 +3,7 @@
 
 ## Live Demo: 
 
-[Live Demo](https://move-challenge-rol.vercel.app)
+You can see a live demo of this application <a href="https://move-challenge-rol.vercel.app" target="_blank">here</a>.
 
 ## Simple Task Management System
 
