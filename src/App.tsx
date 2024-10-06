@@ -5,7 +5,7 @@ import { store, persistor } from './store'
 import TaskList from './components/TaskList'
 import TaskForm from './components/TaskForm'
 import Footer from './components/Footer'
-import OverlayComponent from './components/Overlay' // Import your overlay
+import OverlayComponent from './components/Overlay'
 import styled from '@emotion/styled'
 
 const AppContainer = styled.div`
@@ -58,7 +58,7 @@ function App() {
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         {!userName ? (
-          <OverlayComponent onSubmitName={handleNameSubmit} /> // Show overlay if name is not set
+          <OverlayComponent onSubmitName={handleNameSubmit} />
         ) : (
           <AppContainer>
             <Title>Welcome {userName}!</Title>
