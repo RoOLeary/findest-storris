@@ -1,6 +1,10 @@
 
 # Move (Framna) Senior Frontend Developer Assignment
 
+## Live Demo: 
+
+[Live Demo](https://move-challenge-rol.vercel.app)
+
 ## Simple Task Management System
 
 This project is a simple Task Management system built using **ReactJS**, **TypeScript**, **Styled Components (Emotion)**, and **Jest + Testing Library**. It allows users to add, edit, delete, and list tasks. The tasks are managed locally and fetched from a mock API. This system also synchronizes tasks with a backend for persistence.
