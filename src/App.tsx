@@ -18,6 +18,23 @@ const Title = styled.h1`
   margin-bottom: 20px;
   font-weight: bold;
 `
+const SubTitle = styled.h2`
+  font-size: 16px;
+  margin-bottom: 20px;
+  font-weight: normal;
+  padding: 10px;
+  background: white; 
+  border: 1px solid #ccc;
+  border-radius: 4px; 
+  display: flex;
+  align-items: center;
+  color: gray;
+
+  span{
+    font-weight: bold;
+    padding-left: 4px;
+  }
+`
 
 function App() {
   const [userName, setUserName] = useState<string | null>(null)
@@ -43,8 +60,8 @@ function App() {
           <OverlayComponent onSubmitName={handleNameSubmit} />
         ) : (
           <AppContainer>
-            <Title>Welcome {userName}!</Title>
-            <Title>Task Manager:</Title>
+            <Title>Simple Task Manager</Title>
+            {userName && <SubTitle>Welcome <span> {userName}</span>, you can add/edit/delete tasks using the interface below</SubTitle>}
             <TaskForm user={userName}/>
             <TaskList />
             <Footer />
