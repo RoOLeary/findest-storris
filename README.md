@@ -26,31 +26,31 @@ This project is a simple Task Management system built using **ReactJS**, **TypeS
 
 ## Technologies Used
 
-#### **ReactJS**:
+### **ReactJS**:
 Used for building the user interface with reusable, component-based architecture.
 
-#### **TypeScript**:
+### **TypeScript**:
 Provides type safety across the application, reducing runtime errors and enhancing the development experience with better tooling and autocomplete features.
 
-#### **Styled Components (Emotion)**:
+### **Styled Components (Emotion)**:
 Allows writing scoped, component-specific styles, offering a maintainable and scalable solution for styling components while supporting dynamic theming and props.
 
-#### **Redux (Toolkit)**:
+### **Redux (Toolkit)**:
 Manages global state in a predictable and maintainable way, particularly for tasks-related data and actions. Manages localstorage and persistence.
 
-#### **Jest + React Testing Library**:
+### **Jest + React Testing Library**:
 Used for unit and integration testing, ensuring reliability and correctness of the components and business logic.
 
-#### **localStorage**:
+### **localStorage**:
 Employed to persist transient user data (such as tasks) locally in the browser, enabling the user’s data to remain available across sessions.
 
-#### **Vite**:
+### **Vite**:
 Provides a fast and efficient development build tool, with features like hot module replacement (HMR) that enhance the development workflow.
 
-#### **ESLint**:
+### **ESLint**:
 Enforces code quality and best practices, identifying potential errors and maintaining consistency in TypeScript and JavaScript codebases.
 
-#### **TailwindCSS**:
+### **TailwindCSS**:
 Integrated for applying global utility-based CSS classes, enabling quick structural layout adjustments, complementing the component-specific styles provided by Emotion.
 .
 
