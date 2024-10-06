@@ -29,6 +29,35 @@ This project is a simple Task Management system built using **ReactJS**, **TypeS
 - **Jest + Testing Library**: For unit testing components and ensuring functionality.
 - **localStorage**: For storing transient user data locally in the browser.
 
+## Test Suites
+```
+TaskForm Component:
+
+- ✓ should render the inputs and submit button (102 ms)
+- ✓ should allow input changes for title, description, and priority (24 ms)
+- ✓ should dispatch addNewTask when form is submitted (29 ms)
+- ✓ should not dispatch addNewTask if all inputs are empty (17 ms)
+
+TaskItem Component:
+- ✓ should render task details correctly when not in edit mode (97 ms)
+- ✓ should enter edit mode when clicking the "Edit" button (37 ms)
+- ✓ should call onSaveEdit when "Save" button is clicked (64 ms)
+- ✓ should call onToggleCompletion when "Complete" button is clicked (8 ms)
+- ✓ should call onDelete when "Delete" button is clicked (5 ms)
+
+TaskList Component:
+
+- ✓ should dispatch fetchTasks when component mounts (76 ms)
+- ✓ should display tasks correctly (34 ms)
+- ✓ should filter tasks based on user selection (53 ms)
+- ✓ should allow task completion toggle (35 ms)
+- ✓ should allow task editing and saving (48 ms)
+- ✓ should allow task deletion (12 ms)
+- ✓ should reset everything when reset button is clicked (17 ms)
+
+```
+
+
 ## Project Setup
 
 ### Prerequisites
