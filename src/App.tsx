@@ -18,10 +18,10 @@ const Title = styled.h1`
   margin-bottom: 20px;
   font-weight: bold;
 `
-const SubTitle = styled.h2`
-  font-size: 16px;
+const SubTitle = styled.h2<{ emph: boolean }>`
+  font-size: ${(props) => (props.emph ? '18px' : '16px')}; 
+  font-weight: ${(props) => (props.emph ? 'bold' : 'normal')}; 
   margin-bottom: 5px;
-  font-weight: normal;
   display: flex;
   align-items: center;
   color: #000;
@@ -84,9 +84,10 @@ function App() {
           <AppContainer>
             <Title>Simple Task Manager:</Title>
             <InstructionsContainer>
-              <SubTitle>Welcome {userName}!</SubTitle>
+              <SubTitle emph={true}>Welcome {userName}!</SubTitle>
               <InstructionsText>User the interface below to Add, Edit, Update and Delete Tasks. <br />When adding a task, you will automatically be shown as the task creator. <br />Tasks can be filtered by "All", "My Tasks", "Completed", and "Incomplete".</InstructionsText>
             </InstructionsContainer>
+            <SubTitle emph={true}>Add a New Task: </SubTitle>
             <TaskForm user={userName}/>
             <TaskList />
             <Footer />
