@@ -53,7 +53,8 @@ const TaskInfoContainer = styled.div`
 // Dim only the task description and metadata if the task is completed
 const TaskDetailsContent = styled.div<{ completed: boolean }>`
   opacity: ${(props) => (props.completed ? '0.5' : '1')};  
-  transition: opacity 0.3s ease-in-out; 
+  text-decoration: ${(props) => (props.completed ? 'line-through' : 'none')};  
+  transition: all 0.3s ease-in-out; 
   width: 100%;
 `;
 
