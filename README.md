@@ -78,8 +78,8 @@ To run this project locally, follow these steps:
 1. **Clone the repository**:
 
    ```bash
-   git clone https://github.com/your-repository/simple-task-manager.git
-   cd simple-task-manager
+   git clone git@github.com:RoOLeary/move-challenge-rol.git
+   cd move-challenge-rol
    ```
 
 2. **Install dependencies**:
