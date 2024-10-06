@@ -153,7 +153,7 @@ Here's a brief overview of the important files and directories:
 
 You can include screenshots of your app to give users a visual preview of the UI.
 
-## Future Improvements
+## Possible Future Improvements
 
 - **Backend Integration**: Replace the mock API with a real backend for full CRUD operations.
 - **Authentication**: Add user authentication and associate tasks with users.
