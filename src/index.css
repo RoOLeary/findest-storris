@@ -7,7 +7,6 @@ body {
   height: 100vh;
 }
 
-
 #sail-group {
   transform-origin: 32.5px 24.5px;
   transition: all 1.5s ease-in-out;

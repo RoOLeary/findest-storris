@@ -26,6 +26,11 @@ const Select = styled.select`
   background-color: white;
   color: black;
 
+  @media (max-width: 600px){
+    margin-left: 0; 
+  }
+
+
   &:focus{
     outline: 1px solid green; 
     border-color: green;
@@ -42,6 +47,10 @@ const FilterLabel = styled.label`
   font-size: 16px;
   margin-right: 10px;
   font-weight: bold;
+  display: block; 
+  @media (max-width: 600px){
+    display: none; 
+  }
 `;
 
 const NoTasksMessage = styled.div`
@@ -59,6 +68,10 @@ const ResetButton = styled.button`
   border-radius: 4px;
   cursor: pointer;
   margin-left: 10px;
+
+  @media (max-width: 600px){
+    flex-grow: 1; 
+  }
 
   &:hover {
     background-color: darkred;
