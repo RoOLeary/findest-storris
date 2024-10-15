@@ -1,30 +1,47 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
+import { taskApi } from './services/taskApi';  // Import your taskApi
+import { setupListeners } from '@reduxjs/toolkit/query';
+import { createReduxHistoryContext } from 'redux-first-history';
+import { createBrowserHistory } from 'history';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-import tasksReducer from './reducers/tasksReducer';
 
-// Configure the persist setup
+// Redux Router Setup
+const { createReduxHistory, routerMiddleware, routerReducer } =
+  createReduxHistoryContext({ history: createBrowserHistory() });
+
+// Persistence Config
 const persistConfig = {
   key: 'root',
   storage,
 };
 
-// Wrap the tasksReducer with persistReducer to enable persistence
-const persistedReducer = persistReducer(persistConfig, tasksReducer);
-
-export const store = configureStore({
-  reducer: {
-    tasks: persistedReducer, // Aaaaaand apply the persisted reducer here
-  },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: false, // Disable serializable check for persistence compatibility
-    }),
+// Combining reducers with persistence and RTK Query reducer
+const rootReducer = combineReducers({
+  router: routerReducer,
+  [taskApi.reducerPath]: taskApi.reducer,  // Include RTK Query reducer
 });
 
-// Export the persistor, then BOOM!!! We're away!
+// Persist the root reducer
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+export const store = configureStore({
+  reducer: persistedReducer,  // Apply persisted reducer
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,  // For persistence compatibility
+    }).concat([taskApi.middleware, routerMiddleware]),  // Concatenate RTK Query and router middleware
+});
+
+// Set up listeners for RTK Query refetching
+setupListeners(store.dispatch);
+
+// Create the persistor for persistence
 export const persistor = persistStore(store);
 
-// TypeScript types for the RootState and AppDispatch
+// Infer the `RootState` and `AppDispatch` types
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+
+// Create history for React Router
+export const history = createReduxHistory(store);

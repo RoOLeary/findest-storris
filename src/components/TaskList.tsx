@@ -1,9 +1,10 @@
+// @ts-nocheck
 import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState, AppDispatch, persistor } from '../store';
-import { fetchTasks, removeTask, Task, toggleTaskCompletion, updateTask } from '../actions/tasksActions';
+// import { useDispatch } from 'react-redux';
+import { persistor } from '../store';
 import styled from '@emotion/styled';
 import TaskItem from './TaskItem';
+import { useGetTaskListQuery, useDeleteTaskMutation, useToggleTaskCompletionMutation, useUpdateTaskMutation } from '../services/taskApi';
 
 const ItemsContainer = styled.div`
   background: #ffffff;
@@ -26,13 +27,12 @@ const Select = styled.select`
   background-color: white;
   color: black;
 
-  @media (max-width: 600px){
-    margin-left: 0; 
+  @media (max-width: 600px) {
+    margin-left: 0;
   }
 
-
-  &:focus{
-    outline: 1px solid green; 
+  &:focus {
+    outline: 1px solid green;
     border-color: green;
   }
 `;
@@ -47,9 +47,9 @@ const FilterLabel = styled.label`
   font-size: 16px;
   margin-right: 10px;
   font-weight: bold;
-  display: block; 
-  @media (max-width: 600px){
-    display: none; 
+  display: block;
+  @media (max-width: 600px) {
+    display: none;
   }
 `;
 
@@ -69,8 +69,8 @@ const ResetButton = styled.button`
   cursor: pointer;
   margin-left: 10px;
 
-  @media (max-width: 600px){
-    flex-grow: 1; 
+  @media (max-width: 600px) {
+    flex-grow: 1;
   }
 
   &:hover {
@@ -79,34 +79,36 @@ const ResetButton = styled.button`
 `;
 
 const TaskList = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const tasks = useSelector((state: RootState) => state.tasks.items);
-  const status = useSelector((state: RootState) => state.tasks.status);
+  // const dispatch = useDispatch();
   const [filter, setFilter] = useState<string>('all');
   const [userName, setUserName] = useState<string>('');
 
+  // Fetch tasks using RTK Query
+  const { data: tasks = [], error, isLoading } = useGetTaskListQuery();
+
+  // Mutations for updating, deleting, and toggling task completion
+  const [deleteTask] = useDeleteTaskMutation();
+  const [toggleTaskCompletion] = useToggleTaskCompletionMutation();
+  const [updateTask] = useUpdateTaskMutation();
+
   useEffect(() => {
-    // Wouldn't do this in a real world scenario, but will mock it for demo purposes
-    const storedName = localStorage.getItem('userName')
+    const storedName = localStorage.getItem('userName');
     if (storedName) {
-      setUserName(storedName)
+      setUserName(storedName);
     }
-    if (status === 'idle') {
-      dispatch(fetchTasks());
-    }
-  }, [status, dispatch]);
+  }, []);
 
-  const handleDelete = (id: string) => {
-    dispatch(removeTask(id));
+  const handleDelete = async (id: string) => {
+    await deleteTask(id);
   };
 
-  const handleToggleCompletion = (task: Task) => {
-    dispatch(toggleTaskCompletion(task));
+  const handleToggleCompletion = async (task: Task) => {
+    await toggleTaskCompletion(task);
   };
 
-  const handleSaveEdit = (task: Task, newTitle: string, newDescription: string) => {
+  const handleSaveEdit = async (task: Task, newTitle: string, newDescription: string) => {
     if (newTitle.trim()) {
-      dispatch(updateTask({ ...task, title: newTitle, description: newDescription }));
+      await updateTask({ ...task, title: newTitle, description: newDescription });
     }
   };
 
@@ -115,8 +117,7 @@ const TaskList = () => {
   };
 
   const resetEverything = () => {
-    if (window.confirm("Are you sure you want to resync?")) {
-      // console.log("Calling persistor.purge");
+    if (window.confirm('Are you sure you want to resync?')) {
       persistor.purge().then(() => {
         window.location.reload();
       });
@@ -124,7 +125,7 @@ const TaskList = () => {
   };
 
   const purgeEverything = () => {
-    if (window.confirm("Are you sure you want to clear storage and logout?")) {
+    if (window.confirm('Are you sure you want to clear storage and logout?')) {
       localStorage.clear();
       persistor.purge().then(() => {
         window.location.reload();
@@ -132,7 +133,10 @@ const TaskList = () => {
     }
   };
 
-  const filteredTasks = tasks.filter((task) => {
+  // Sort the tasks based on `dateCreated` in descending order
+  const sortedTasks = [...tasks].sort((a, b) => new Date(b.dateCreated) - new Date(a.dateCreated));
+
+  const filteredTasks = sortedTasks.filter((task) => {
     if (filter === 'my-tasks') {
       return task.author === userName;
     } else if (filter === 'completed') {
@@ -143,8 +147,12 @@ const TaskList = () => {
     return true;
   });
 
-  if (status === 'loading') {
+  if (isLoading) {
     return <div>Loading tasks...</div>;
+  }
+
+  if (error) {
+    return <div>Error loading tasks. Please try again later.</div>;
   }
 
   return (

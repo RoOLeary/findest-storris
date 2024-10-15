@@ -1,33 +1,31 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../store';
-import { addNewTask } from '../actions/tasksActions';
 import styled from '@emotion/styled';
+import { useAddTaskMutation } from '../services/taskApi';  // RTK Query hook for adding a task
 
 // Styled components
 const Form = styled.form`
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
   margin-bottom: 10px;
-  gap: 16px; 
-  align-items: stretch; 
+  gap: 16px;
+  align-items: stretch;
 `;
 
 const InputContainer = styled.div<{ hasError: boolean }>`
   position: relative;
   flex-grow: 1;
-  margin-bottom: ${(props) => (props.hasError ? '25px' : '0')}; 
+  margin-bottom: ${(props) => (props.hasError ? '25px' : '0')};
 `;
 
 const Input = styled.input<{ hasError: boolean }>`
   width: 100%;
   padding: 10px;
   font-size: 16px;
-  border: 1px solid ${(props) => (props.hasError ? 'red' : '#ccc')}; 
+  border: 1px solid ${(props) => (props.hasError ? 'red' : '#ccc')};
   border-radius: 4px;
 
-  &:focus{
-    outline: 1px solid green; 
+  &:focus {
+    outline: 1px solid green;
     border-color: green;
   }
 `;
@@ -35,7 +33,7 @@ const Input = styled.input<{ hasError: boolean }>`
 const SelectButtonContainer = styled.div`
   display: flex;
   flex-direction: row;
-  gap: 8px; 
+  gap: 8px;
   align-items: center;
 `;
 
@@ -110,23 +108,31 @@ const ButtonText = styled.span`
 `;
 
 const TaskForm = ({ user }) => {
-  
   const [title, setTitle] = useState<string>(''); 
   const [description, setDescription] = useState<string>(''); 
   const [priority, setPriority] = useState<string>('default'); 
   const [hasError, setHasError] = useState<boolean>(false); 
-  const [author, setAuthor] = useState<string>(user); 
-  const dispatch = useDispatch<AppDispatch>();
+  const [author] = useState<string>(user);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+  // RTK Query mutation hook for adding a new task
+  const [addTask] = useAddTaskMutation();
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     if (title.trim() || description.trim() || priority !== 'default') {
-      dispatch(addNewTask({ title, description, priority, author })); 
-      setTitle('');
-      setDescription(''); 
-      setPriority('low');
-      setAuthor('');  
-      setHasError(false);
+      try {
+        // Call the mutation to add a new task
+        await addTask({
+          title, description, priority, author,
+          completed: false
+        }).unwrap();
+        setTitle('');
+        setDescription('');
+        setPriority('low');
+        setHasError(false);
+      } catch (error) {
+        console.error('Failed to add task:', error);
+      }
     } else {
       setHasError(true);
     }

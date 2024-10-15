@@ -1,31 +1,22 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import TaskList from '../TaskList';
-import {
-  fetchTasks,
-  removeTask,
-  toggleTaskCompletion,
-  updateTask,
-} from '../../actions/tasksActions';
+import { useGetTaskListQuery, useDeleteTaskMutation, useToggleTaskCompletionMutation, useUpdateTaskMutation } from '../../services/taskApi';
 import { persistor } from '../../store';
-import { Task } from '../../actions/tasksActions';
+import { Provider } from 'react-redux';
+import { configureStore } from '@reduxjs/toolkit';
+import { taskApi } from '../../services/taskApi';
 
-// Mocking react-redux hooks
-jest.mock('react-redux', () => ({
-  useSelector: jest.fn(),
-  useDispatch: jest.fn(),
+// Mock RTK Query hooks but keep the original reducerPath and reducer
+jest.mock('../../services/taskApi', () => ({
+  ...jest.requireActual('../../services/taskApi'), // Keep the original reducerPath and reducer
+  useGetTaskListQuery: jest.fn(),
+  useDeleteTaskMutation: jest.fn(),
+  useToggleTaskCompletionMutation: jest.fn(),
+  useUpdateTaskMutation: jest.fn(),
 }));
 
-// Mocking actions
-jest.mock('../../actions/tasksActions', () => ({
-  fetchTasks: jest.fn(),
-  removeTask: jest.fn(),
-  toggleTaskCompletion: jest.fn(),
-  updateTask: jest.fn(),
-}));
-
-// Mocking persistor
+// Mock the persistor
 jest.mock('../../store', () => ({
   persistor: {
     purge: jest.fn().mockResolvedValue(undefined),
@@ -34,10 +25,9 @@ jest.mock('../../store', () => ({
 
 // Mock localStorage and window.location.reload
 beforeEach(() => {
-  // Mock localStorage to return 'Curren T. User' for the userName
   Object.defineProperty(window, 'localStorage', {
     value: {
-      getItem: jest.fn(() => 'Curren T. User'), // Mock userName in localStorage
+      getItem: jest.fn(() => 'Curren T. User'),
       setItem: jest.fn(),
       clear: jest.fn(),
     },
@@ -47,16 +37,26 @@ beforeEach(() => {
   Object.defineProperty(window, 'location', {
     value: {
       ...window.location,
-      reload: jest.fn(), // Mock the reload function
+      reload: jest.fn(),
     },
-    writable: true, // Make the property writable
+    writable: true,
   });
 });
 
-describe('TaskList Component', () => {
-  const dispatch = jest.fn();
+// Create a mock store with taskApi reducer
+const mockStore = configureStore({
+  reducer: {
+    [taskApi.reducerPath]: taskApi.reducer, // Use the real taskApi reducer
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(taskApi.middleware), // Add taskApi middleware
+});
 
-  const tasks: Task[] = [
+describe('TaskList Component', () => {
+  const mockDeleteTask = jest.fn();
+  const mockToggleTaskCompletion = jest.fn();
+  const mockUpdateTask = jest.fn();
+  const mockTasks = [
     {
       id: '1',
       title: 'Test Task 1',
@@ -76,96 +76,115 @@ describe('TaskList Component', () => {
   ];
 
   beforeEach(() => {
-    // Mock dispatch
-    (useDispatch as unknown as jest.Mock).mockReturnValue(dispatch);
-
-    // Mock state returned by useSelector
-    (useSelector as unknown as jest.Mock).mockImplementation((selectorFn) =>
-      selectorFn({
-        tasks: {
-          items: tasks,
-          status: 'idle',
-        },
-      })
-    );
+    // Mock RTK Query hooks
+    (useGetTaskListQuery as jest.Mock).mockReturnValue({
+      data: mockTasks,
+      isLoading: false,
+      error: null,
+    });
+    (useDeleteTaskMutation as jest.Mock).mockReturnValue([mockDeleteTask]);
+    (useToggleTaskCompletionMutation as jest.Mock).mockReturnValue([mockToggleTaskCompletion]);
+    (useUpdateTaskMutation as jest.Mock).mockReturnValue([mockUpdateTask]);
 
     jest.clearAllMocks();
   });
 
-  it('should dispatch fetchTasks when component mounts', () => {
-    render(<TaskList />);
-    expect(dispatch).toHaveBeenCalledWith(fetchTasks());
-  });
+  const renderComponent = () =>
+    render(
+      <Provider store={mockStore}>
+        <TaskList />
+      </Provider>
+    );
 
-  it('should display tasks correctly', () => {
-    render(<TaskList />);
+  it('should render tasks correctly', () => {
+    renderComponent();
+
+    // Check that tasks are rendered
     expect(screen.getByText('Test Task 1')).toBeInTheDocument();
     expect(screen.getByText('Test Task 2')).toBeInTheDocument();
   });
 
+  it('should display a loading message when tasks are being fetched', () => {
+    (useGetTaskListQuery as jest.Mock).mockReturnValue({
+      data: [],
+      isLoading: true,
+      error: null,
+    });
+
+    renderComponent();
+    expect(screen.getByText('Loading tasks...')).toBeInTheDocument();
+  });
+
+  it('should display an error message if task fetching fails', () => {
+    (useGetTaskListQuery as jest.Mock).mockReturnValue({
+      data: [],
+      isLoading: false,
+      error: 'Error fetching tasks',
+    });
+
+    renderComponent();
+    expect(screen.getByText('Error loading tasks. Please try again later.')).toBeInTheDocument();
+  });
+
   it('should filter tasks based on user selection', () => {
-    render(<TaskList />);
+    renderComponent();
+
+    // Change filter to "my-tasks"
     fireEvent.change(screen.getByLabelText(/filter by/i), {
       target: { value: 'my-tasks' },
     });
+
+    // Only the task authored by "Curren T. User" should be displayed
     expect(screen.getByText('Test Task 1')).toBeInTheDocument();
     expect(screen.queryByText('Test Task 2')).not.toBeInTheDocument();
   });
 
-  it('should allow task completion toggle', () => {
-    render(<TaskList />);
-    fireEvent.click(screen.getByText('Complete')); // Click on the 'Complete' button for task 1
-    expect(dispatch).toHaveBeenCalledWith(
-      toggleTaskCompletion({
-        id: '1',
-        title: 'Test Task 1',
-        completed: false,
-        priority: 'medium',
-        author: 'Curren T. User',
-        description: 'Description 1',
-      })
-    );
+  it('should call deleteTask mutation when a task is deleted', async () => {
+    renderComponent();
+
+    const deleteButton = screen.getAllByText('Delete')[0];
+    fireEvent.click(deleteButton);
+
+    await waitFor(() => {
+      expect(mockDeleteTask).toHaveBeenCalledWith(mockTasks[0].id);
+    });
   });
 
-  it('should allow task editing and saving', () => {
-    render(<TaskList />);
-    const editButtons = screen.getAllByText('Edit'); // Get all Edit buttons
-    fireEvent.click(editButtons[0]); // Click on the first 'Edit' button
+  it('should call toggleTaskCompletion mutation when task is completed', async () => {
+    renderComponent();
 
-    fireEvent.change(screen.getByPlaceholderText('Edit task title'), {
-      target: { value: 'Updated Task Title' },
+    const completeButton = screen.getAllByText('Complete')[0];
+    fireEvent.click(completeButton);
+
+    await waitFor(() => {
+      expect(mockToggleTaskCompletion).toHaveBeenCalledWith(mockTasks[0]);
     });
-    fireEvent.change(screen.getByPlaceholderText('Edit task description'), {
-      target: { value: 'Updated Task Description' },
-    });
-    fireEvent.click(screen.getByText('Save')); // Save the task
-
-    expect(dispatch).toHaveBeenCalledWith(
-      updateTask({
-        id: '1',
-        title: 'Updated Task Title',
-        completed: false,
-        priority: 'medium',
-        author: 'Curren T. User',
-        description: 'Updated Task Description',
-      })
-    );
-  });
-
-  it('should allow task deletion', () => {
-    render(<TaskList />);
-    const deleteButtons = screen.getAllByText('Delete'); // Get all Delete buttons
-    fireEvent.click(deleteButtons[0]); // Delete the first task
-    expect(dispatch).toHaveBeenCalledWith(removeTask('1'));
   });
 
   it('should reset everything when reset button is clicked', async () => {
     window.confirm = jest.fn(() => true); // Mock the confirm dialog
-    render(<TaskList />);
-    fireEvent.click(screen.getByText('Resync')); // Click reset button
+    renderComponent();
 
-    // Ensure persistor.purge was called
-    expect(persistor.purge).toHaveBeenCalled();
-    
+    fireEvent.click(screen.getByText('Resync')); // Click the reset button
+
+    // Ensure persistor.purge was called and the page reloaded
+    await waitFor(() => {
+      expect(persistor.purge).toHaveBeenCalled();
+      expect(window.location.reload).toHaveBeenCalled();
+    });
+  });
+
+  it('should clear everything and logout when logout button is clicked', async () => {
+    window.confirm = jest.fn(() => true); // Mock the confirm dialog
+    renderComponent();
+
+    fireEvent.click(screen.getByText('Logout')); // Click the logout button
+
+    // Ensure localStorage was cleared, persistor.purge was called, and the page reloaded
+    await waitFor(() => {
+      expect(localStorage.clear).toHaveBeenCalled();
+      expect(persistor.purge).toHaveBeenCalled();
+      expect(window.location.reload).toHaveBeenCalled();
+    });
   });
 });

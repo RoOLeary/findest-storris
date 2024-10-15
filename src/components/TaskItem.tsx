@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
-import { Task } from '../actions/tasksActions';
 import { CompleteButton, SaveButton, EditButton, DeleteButton } from './StyledComponents';
 import { IoCheckmarkOutline } from 'react-icons/io5';
+import { useUpdateTaskMutation, useDeleteTaskMutation, useToggleTaskCompletionMutation } from '../services/taskApi';
+
+import { Task } from '../types/types';
+
 
 // Smoothly animate the checkmark icon appearance/disappearance
 const CheckIcon = styled.span<{ completed: boolean }>`
@@ -43,14 +46,12 @@ const TaskItemContainer = styled.li<{ isEditing: boolean }>`
   }
 `;
 
-// Container to stack the title and details with flex-direction: column
 const TaskInfoContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 5px; 
 `;
 
-// Dim only the task description and metadata if the task is completed
 const TaskDetailsContent = styled.div<{ completed: boolean }>`
   opacity: ${(props) => (props.completed ? '0.5' : '1')};  
   text-decoration: ${(props) => (props.completed ? 'line-through' : 'none')};
@@ -122,19 +123,29 @@ const ButtonContainer = styled.div<{ isEditing?: boolean }>`
 
 interface TaskItemProps {
   task: Task;
-  onSaveEdit: (task: Task, newTitle: string, newDescription: string) => void;
-  onToggleCompletion: () => void;
-  onDelete: () => void;
 }
 
-const TaskItem = ({ task, onSaveEdit, onToggleCompletion, onDelete }: TaskItemProps) => {
+const TaskItem = ({ task }: TaskItemProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(task.title);
   const [editDescription, setEditDescription] = useState(task.description || '');
 
-  const handleSave = () => {
-    onSaveEdit(task, editTitle, editDescription);
+  // RTK Query hooks for updating, deleting, and toggling task completion
+  const [updateTask] = useUpdateTaskMutation();
+  const [deleteTask] = useDeleteTaskMutation();
+  const [toggleTaskCompletion] = useToggleTaskCompletionMutation();
+
+  const handleSave = async () => {
+    await updateTask({ ...task, title: editTitle, description: editDescription });
     setIsEditing(false);
+  };
+
+  const handleToggleCompletion = async () => {
+    await toggleTaskCompletion(task);
+  };
+
+  const handleDelete = async () => {
+    await deleteTask(task.id);
   };
 
   return (
@@ -182,11 +193,11 @@ const TaskItem = ({ task, onSaveEdit, onToggleCompletion, onDelete }: TaskItemPr
             </TaskDetailsContent>
           </TaskInfoContainer>
           <ButtonContainer>
-            <CompleteButton completed={task.completed} onClick={onToggleCompletion}>
+            <CompleteButton completed={task.completed} onClick={handleToggleCompletion}>
               {task.completed ? 'Undo' : 'Complete'}
             </CompleteButton>
             <EditButton onClick={() => setIsEditing(true)}>Edit</EditButton>
-            <DeleteButton onClick={onDelete}>Delete</DeleteButton>
+            <DeleteButton onClick={handleDelete}>Delete</DeleteButton>
           </ButtonContainer>
         </>
       )}

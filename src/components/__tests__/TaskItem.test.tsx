@@ -1,83 +1,81 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import TaskItem from '../TaskItem';
-import { Task } from '../../actions/tasksActions';
+import { Task } from '../../types/types';
+import { useUpdateTaskMutation, useDeleteTaskMutation, useToggleTaskCompletionMutation } from '../../services/taskApi';
 
-// Mock props
-const task: Task = {
-  id: '1',
-  title: 'Test Task',
-  completed: false,
-  author: 'Test User',
-  priority: 'medium',
-  description: 'Test Description',
-};
-
-const mockOnSaveEdit = jest.fn();
-const mockOnToggleCompletion = jest.fn();
-const mockOnDelete = jest.fn();
+// Mock RTK Query hooks
+jest.mock('../../services/taskApi', () => ({
+  useUpdateTaskMutation: jest.fn(),
+  useDeleteTaskMutation: jest.fn(),
+  useToggleTaskCompletionMutation: jest.fn(),
+}));
 
 describe('TaskItem Component', () => {
+  const mockUpdateTask = jest.fn();
+  const mockDeleteTask = jest.fn();
+  const mockToggleTaskCompletion = jest.fn();
+
+  const mockTask: Task = {
+    id: '1',
+    title: 'Test Task',
+    description: 'Test Description',
+    priority: 'medium',
+    author: 'Test User',
+    completed: false,
+  };
+
   beforeEach(() => {
+    (useUpdateTaskMutation as jest.Mock).mockReturnValue([mockUpdateTask]);
+    (useDeleteTaskMutation as jest.Mock).mockReturnValue([mockDeleteTask]);
+    (useToggleTaskCompletionMutation as jest.Mock).mockReturnValue([mockToggleTaskCompletion]);
+
     jest.clearAllMocks();
   });
 
   it('should render task details correctly when not in edit mode', () => {
-    render(
-      <TaskItem
-        task={task}
-        onSaveEdit={mockOnSaveEdit}
-        onToggleCompletion={mockOnToggleCompletion}
-        onDelete={mockOnDelete}
-      />
-    );
+    render(<TaskItem task={mockTask} />);
 
     // Check that the task title and description are rendered
     expect(screen.getByText('Test Task')).toBeInTheDocument();
     expect(screen.getByText('Test Description')).toBeInTheDocument();
 
-    // Check that the action buttons are rendered
+    // Check that the priority and author are rendered using a more flexible matcher
+    expect(screen.getByText((content, element) =>
+      element?.textContent === 'Priority: medium'
+    // @ts-ignore
+    )).toBeInTheDocument();
+
+    expect(screen.getByText((content, element) =>
+      element?.textContent === 'Created by: Test User'
+    )).toBeInTheDocument();
+
+    // Check that the Complete, Edit, and Delete buttons are rendered
     expect(screen.getByText('Complete')).toBeInTheDocument();
     expect(screen.getByText('Edit')).toBeInTheDocument();
     expect(screen.getByText('Delete')).toBeInTheDocument();
   });
 
   it('should enter edit mode when clicking the "Edit" button', () => {
-    render(
-      <TaskItem
-        task={task}
-        onSaveEdit={mockOnSaveEdit}
-        onToggleCompletion={mockOnToggleCompletion}
-        onDelete={mockOnDelete}
-      />
-    );
+    render(<TaskItem task={mockTask} />);
 
-    // Click the edit button to enter edit mode
     fireEvent.click(screen.getByText('Edit'));
 
-    // Check that input fields are displayed for title and description
+    // Check if the input fields for title and description appear
     expect(screen.getByPlaceholderText('Edit task title')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('Edit task description')).toBeInTheDocument();
 
-    // Check that Save and Cancel buttons are displayed
+    // Check if the Save and Cancel buttons are rendered
     expect(screen.getByText('Save')).toBeInTheDocument();
     expect(screen.getByText('Cancel')).toBeInTheDocument();
   });
 
-  it('should call onSaveEdit when "Save" button is clicked', () => {
-    render(
-      <TaskItem
-        task={task}
-        onSaveEdit={mockOnSaveEdit}
-        onToggleCompletion={mockOnToggleCompletion}
-        onDelete={mockOnDelete}
-      />
-    );
+  it('should call updateTask when "Save" button is clicked after editing', async () => {
+    render(<TaskItem task={mockTask} />);
 
-    // Enter edit mode
     fireEvent.click(screen.getByText('Edit'));
 
-    // Change the task title and description
+    // Simulate editing the title and description
     fireEvent.change(screen.getByPlaceholderText('Edit task title'), {
       target: { value: 'Updated Task Title' },
     });
@@ -85,48 +83,54 @@ describe('TaskItem Component', () => {
       target: { value: 'Updated Task Description' },
     });
 
-    // Simulate clicking the Save button
     fireEvent.click(screen.getByText('Save'));
 
-    // Ensure that onSaveEdit was called with updated values
-    expect(mockOnSaveEdit).toHaveBeenCalledWith(
-      task,
-      'Updated Task Title',
-      'Updated Task Description'
-    );
+    // Ensure that updateTask mutation was called with the updated task
+    await waitFor(() => {
+      expect(mockUpdateTask).toHaveBeenCalledWith({
+        ...mockTask,
+        title: 'Updated Task Title',
+        description: 'Updated Task Description',
+      });
+    });
   });
 
-  it('should call onToggleCompletion when "Complete" button is clicked', () => {
-    render(
-      <TaskItem
-        task={task}
-        onSaveEdit={mockOnSaveEdit}
-        onToggleCompletion={mockOnToggleCompletion}
-        onDelete={mockOnDelete}
-      />
-    );
+  it('should call toggleTaskCompletion when "Complete" button is clicked', async () => {
+    render(<TaskItem task={mockTask} />);
 
-    // Simulate clicking the Complete button
     fireEvent.click(screen.getByText('Complete'));
 
-    // Ensure that onToggleCompletion was called
-    expect(mockOnToggleCompletion).toHaveBeenCalled();
+    // Ensure that toggleTaskCompletion mutation was called
+    await waitFor(() => {
+      expect(mockToggleTaskCompletion).toHaveBeenCalledWith(mockTask);
+    });
   });
 
-  it('should call onDelete when "Delete" button is clicked', () => {
-    render(
-      <TaskItem
-        task={task}
-        onSaveEdit={mockOnSaveEdit}
-        onToggleCompletion={mockOnToggleCompletion}
-        onDelete={mockOnDelete}
-      />
-    );
+  it('should call deleteTask when "Delete" button is clicked', async () => {
+    render(<TaskItem task={mockTask} />);
 
-    // Simulate clicking the Delete button
     fireEvent.click(screen.getByText('Delete'));
 
-    // Ensure that onDelete was called
-    expect(mockOnDelete).toHaveBeenCalled();
+    // Ensure that deleteTask mutation was called with the task id
+    await waitFor(() => {
+      expect(mockDeleteTask).toHaveBeenCalledWith(mockTask.id);
+    });
+  });
+
+  it('should cancel editing when "Cancel" button is clicked', () => {
+    render(<TaskItem task={mockTask} />);
+
+    fireEvent.click(screen.getByText('Edit'));
+
+    // Click the Cancel button
+    fireEvent.click(screen.getByText('Cancel'));
+
+    // Ensure the task title and description are rendered again
+    expect(screen.getByText('Test Task')).toBeInTheDocument();
+    expect(screen.getByText('Test Description')).toBeInTheDocument();
+
+    // Ensure input fields are not displayed anymore
+    expect(screen.queryByPlaceholderText('Edit task title')).not.toBeInTheDocument();
+    expect(screen.queryByPlaceholderText('Edit task description')).not.toBeInTheDocument();
   });
 });
