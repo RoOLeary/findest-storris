@@ -8,6 +8,7 @@ export const taskApi = createApi({
   endpoints: (builder) => ({
     getTaskList: builder.query<Task[], void>({
       query: () => '/tasks',
+    // @ts-ignore  
       providesTags: (result) =>
         result
           ? [

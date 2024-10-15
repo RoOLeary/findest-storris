@@ -5,4 +5,6 @@ export interface Task {
     completed: boolean;
     priority?: string; 
     author: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    createdAt?: any;
 }
