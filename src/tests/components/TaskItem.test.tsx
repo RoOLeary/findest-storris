@@ -1,11 +1,11 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import TaskItem from '../TaskItem';
-import { Task } from '../../types/types';
+import TaskItem from '../../components/TaskItem';
+import { Task } from '../../types/task';
 import { useUpdateTaskMutation, useDeleteTaskMutation, useToggleTaskCompletionMutation } from '../../services/taskApi';
 
 // Mock RTK Query hooks
-jest.mock('../../services/taskApi', () => ({
+jest.mock('./../../services/taskApi', () => ({
   useUpdateTaskMutation: jest.fn(),
   useDeleteTaskMutation: jest.fn(),
   useToggleTaskCompletionMutation: jest.fn(),
@@ -23,6 +23,7 @@ describe('TaskItem Component', () => {
     priority: 'medium',
     author: 'Test User',
     completed: false,
+    createdAt: "1728905056"
   };
 
   beforeEach(() => {

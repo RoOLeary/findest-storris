@@ -1,82 +1,9 @@
-// @ts-nocheck
-import React, { useEffect, useState } from 'react';
-// import { useDispatch } from 'react-redux';
-import { persistor } from '../store';
-import styled from '@emotion/styled';
-import TaskItem from './TaskItem';
+import { useEffect, useState } from 'react';
 import { useGetTaskListQuery, useDeleteTaskMutation, useToggleTaskCompletionMutation, useUpdateTaskMutation } from '../services/taskApi';
-
-const ItemsContainer = styled.div`
-  background: #ffffff;
-  border-radius: 5px;
-  padding: 1rem;
-`;
-
-const TaskListContainer = styled.ul`
-  list-style: none;
-  padding: 0;
-  margin: 0;
-`;
-
-const Select = styled.select`
-  margin-left: 10px;
-  padding: 8px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: white;
-  color: black;
-
-  @media (max-width: 600px) {
-    margin-left: 0;
-  }
-
-  &:focus {
-    outline: 1px solid green;
-    border-color: green;
-  }
-`;
-
-const FilterContainer = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-`;
-
-const FilterLabel = styled.label`
-  font-size: 16px;
-  margin-right: 10px;
-  font-weight: bold;
-  display: block;
-  @media (max-width: 600px) {
-    display: none;
-  }
-`;
-
-const NoTasksMessage = styled.div`
-  padding: 20px;
-  text-align: center;
-  font-size: 18px;
-  color: #555;
-`;
-
-const ResetButton = styled.button`
-  background-color: red;
-  color: white;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-left: 10px;
-
-  @media (max-width: 600px) {
-    flex-grow: 1;
-  }
-
-  &:hover {
-    background-color: darkred;
-  }
-`;
+import { persistor } from '../store';
+import { FilterContainer, FilterLabel, Select, ResetButton, ItemsContainer, TaskListContainer, NoTasksMessage } from '../components/StyledComponents';
+import TaskItem from './TaskItem';
+import { Task } from '../types/task';
 
 const TaskList = () => {
   // const dispatch = useDispatch();
@@ -133,8 +60,9 @@ const TaskList = () => {
     }
   };
 
-  // Sort the tasks based on `dateCreated` in descending order
-  const sortedTasks = [...tasks].sort((a, b) => new Date(b.dateCreated) - new Date(a.dateCreated));
+
+  // @ts-ignore
+  const sortedTasks = [...tasks].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   const filteredTasks = sortedTasks.filter((task) => {
     if (filter === 'my-tasks') {
@@ -176,6 +104,7 @@ const TaskList = () => {
               <TaskItem
                 key={task.id}
                 task={task}
+                // @ts-ignore
                 onSaveEdit={handleSaveEdit}
                 onDelete={() => handleDelete(task.id)}
                 onToggleCompletion={() => handleToggleCompletion(task)}

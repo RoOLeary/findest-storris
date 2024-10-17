@@ -1,20 +1,30 @@
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import TaskForm from '../TaskForm';
+import TaskForm from '../../components/TaskForm';
 import { useAddTaskMutation } from '../../services/taskApi';
 
 // Mocking the RTK Query hook
-jest.mock('../../services/taskApi', () => ({
+jest.mock('./../../services/taskApi', () => ({
   useAddTaskMutation: jest.fn(),
 }));
 
 describe('TaskForm Component', () => {
   const mockAddTask = jest.fn();
 
+  beforeAll(() => {
+    // Set a fixed date to ensure consistent createdAt value in tests
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date('2024-10-17T21:26:54.000Z')); // Mock the current date
+  });
+
+  afterAll(() => {
+    jest.useRealTimers(); // Restore the real timers after the tests
+  });
+
   beforeEach(() => {
-    // Mock the useAddTaskMutation hook to return the mock function
+    // Ensure the mutation mock works correctly and does not throw an error
     (useAddTaskMutation as jest.Mock).mockReturnValue([mockAddTask]);
-    mockAddTask.mockClear();  // Reset mock for each test
+    mockAddTask.mockResolvedValue({}); // Mock successful response
+    mockAddTask.mockClear();  // Reset the mock before each test
   });
 
   it('should render form fields and submit button', () => {
@@ -71,11 +81,12 @@ describe('TaskForm Component', () => {
 
     // Ensure the addTask mutation was called with the correct data
     expect(mockAddTask).toHaveBeenCalledWith({
-      title: 'Test Task',
-      description: 'Test Description',
-      priority: 'high',
       author: 'Test User',
       completed: false,
+      createdAt: new Date().toISOString(), // Adjusted to compare ISO string
+      description: 'Test Description',
+      priority: 'high',
+      title: 'Test Task',
     });
   });
 

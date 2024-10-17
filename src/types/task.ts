@@ -6,5 +6,5 @@ export interface Task {
     priority?: string; 
     author: string;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    createdAt?: any;
+    createdAt: any;
 }
