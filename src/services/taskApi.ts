@@ -8,13 +8,10 @@ export const taskApi = createApi({
   endpoints: (builder) => ({
     getTaskList: builder.query<Task[], void>({
       query: () => '/tasks',
-    // @ts-ignore  
+      // @ts-ignore  
       providesTags: (result) =>
         result
-          ? [
-              ...result.map(({ id }) => ({ type: 'Task', id })),
-              { type: 'Task', id: 'LIST' },
-            ]
+          ? [ ...result.map(({ id }) => ({ type: 'Task', id })), { type: 'Task', id: 'LIST' },]
           : [{ type: 'Task', id: 'LIST' }],
     }),
 
