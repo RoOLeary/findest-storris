@@ -31,10 +31,10 @@ function App() {
           <OverlayComponent onSubmitName={handleNameSubmit} />
         ) : (
           <AppContainer>
-            <Title>Simple Task Manager:</Title>
+            <Title>Storri's:</Title>
             <InstructionsContainer>
               <SubTitle emph={true}>Welcome {userName}!</SubTitle>
-              <InstructionsText>User the interface below to Add, Edit, Update and Delete Tasks. <br />When adding a task, you will automatically be shown as the task creator. <br />Tasks can be filtered by "All", "My Tasks", "Completed", and "Incomplete".</InstructionsText>
+              <InstructionsText>User the interface below to Add, Edit, Update and Delete your stories. <br />When adding a task, you will automatically be shown as the task creator. <br />Tasks can be filtered by "All", "My Tasks", "Completed", and "Incomplete".</InstructionsText>
             </InstructionsContainer>
             <SubTitle emph={true}>Add a New Task: </SubTitle>
             <TaskForm user={userName}/>
