@@ -59,33 +59,36 @@ const StoryForm = ({ user }) => {
 
   return (
     <Form onSubmit={handleSubmit}>
-      <InputContainer hasError={hasError}>
-        <Input
+      As <Input
           type="text"
           value={title}
           onChange={handleInputChange}
-          placeholder="Enter story title"
+          placeholder="a user"
           hasError={hasError} // Pass error state to the input
         />
-        {hasError && <ErrorMessage>Ooopsie! You forgot to add a task!</ErrorMessage>}
-      </InputContainer>
-      <InputContainer hasError={hasError}>
-        <Input
+          I can <Input
           type="text"
           value={description}
           onChange={handleDescriptionChange}
-          placeholder="Enter story description"
+          placeholder="capability"
           hasError={hasError} // Pass error state to the input
         />
-        {hasError && <ErrorMessage>Whoops! You forgot to add a description!</ErrorMessage>}
-      </InputContainer>
+          so that<Input
+          type="text"
+          value={title}
+          onChange={handleInputChange}
+          placeholder="benefit"
+          hasError={hasError} // Pass error state to the input
+        />
+      
+      
       <SelectButtonContainer>
-        <Select id="filter-task-priority" value={priority} onChange={handlePriorityChange}>
+        {/* <Select id="filter-task-priority" value={priority} onChange={handlePriorityChange}>
           <option value="default">Default (Low)</option>
           <option value="high">High</option>
           <option value="medium">Medium</option>
           <option value="low">Low</option>
-        </Select>
+        </Select> */}
         <ClientButton type="submit">
           <ClientButtonText>Add Story</ClientButtonText>
           <IconWrapper>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useGetStoryListQuery, useDeleteStoryMutation, useToggleStoryCompletionMutation, useUpdateStoryMutation } from '../services/storyApi';
 import { persistor } from '../store';
-import { FilterContainer, FilterLabel, Select, ResetButton, ItemsContainer, StoryListContainer, NoStoriesMessage } from './StyledComponents';
+import { ItemsContainer, StoryListContainer, NoStoriesMessage } from './StyledComponents';
 import StoryItem from './StoryItem';
 import { Story } from '../types/story';
 
@@ -39,28 +39,6 @@ const StoryList = () => {
     }
   };
 
-  const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setFilter(e.target.value);
-  };
-
-  const resetEverything = () => {
-    if (window.confirm('Are you sure you want to resync?')) {
-      persistor.purge().then(() => {
-        window.location.reload();
-      });
-    }
-  };
-
-  const purgeEverything = () => {
-    if (window.confirm('Are you sure you want to clear storage and logout?')) {
-      localStorage.clear();
-      persistor.purge().then(() => {
-        window.location.reload();
-      });
-    }
-  };
-
-
   // @ts-ignore
   const sortedStories = [...stories].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
@@ -84,21 +62,11 @@ const StoryList = () => {
   }
 
   return (
-    <>
-      <FilterContainer>
-        <FilterLabel htmlFor="filter-stories">Filter by:</FilterLabel>
-        <Select id="filter-stories" value={filter} onChange={handleFilterChange}>
-          <option value="all">All Stories</option>
-          <option value="my-stories">My Stories</option>
-          <option value="completed">Completed Stories</option>
-          <option value="incomplete">Incomplete Stories</option>
-        </Select>
-        <ResetButton onClick={resetEverything}>Resync</ResetButton>
-        <ResetButton onClick={purgeEverything}>Logout</ResetButton>
-      </FilterContainer>
+    <div className='w-full md:w-1/2 pt-8'>
 
-      <ItemsContainer>
-        <StoryListContainer>
+
+      
+        
           {filteredStories.length > 0 ? (
             filteredStories.map((story: Story) => (
               <StoryItem
@@ -113,9 +81,9 @@ const StoryList = () => {
           ) : (
             <NoStoriesMessage>No stories found based on the selected filter.</NoStoriesMessage>
           )}
-        </StoryListContainer>
-      </ItemsContainer>
-    </>
+        
+      
+    </div>
   );
 };
 

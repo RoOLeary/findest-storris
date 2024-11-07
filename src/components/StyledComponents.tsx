@@ -115,8 +115,9 @@ export const CheckIcon = styled.span<{ completed: boolean }>`
 export const StoryItemContainer = styled.li<{ isEditing: boolean }>`
   display: flex;
   justify-content: space-between;
-  flex-direction: ${(props) => (props.isEditing ? 'column' : 'row')};
-  align-items: ${(props) => (props.isEditing ? 'stretch' : 'center')};
+  flex-direction: column;
+  align-items: ${(props) => (props.isEditing ? 'stretch' : 'flex-start')};
+  width: 100%; 
   padding: 15px; 
   margin-bottom: 12px; 
   background-color: #fafafa; 
@@ -139,6 +140,7 @@ export const StoryInfoContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 5px; 
+  width: 100%; 
 `;
 export const StoryDetailsContent = styled.div<{ completed: boolean }>`
   opacity: ${(props) => (props.completed ? '0.5' : '1')};  
@@ -187,7 +189,7 @@ export const ButtonContainer = styled.div<{ isEditing?: boolean }>`
   display: flex;
   gap: 10px;
   justify-content: flex-end;
-  width: ${(props) => (props.isEditing ? '100%' : 'auto')};
+  width: ${(props) => (props.isEditing ? '100%' : '100%')};
 
   @media (max-width: 600px) {
     justify-content: ${(props) => (props.isEditing ? 'flex-start' : 'stretch')}; 
@@ -238,9 +240,10 @@ export const ClientButtonText = styled.span`
   white-space: pre;
 `;
 export const AppContainer = styled.div`
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
+  display: flex; 
+  justify-content: space-between;
+  padding: 24px;
+    
 `;
 export const Title = styled.h1`
   font-size: 24px;
@@ -259,35 +262,10 @@ export const SubTitle = styled.h2<{ emph: boolean }>`
     font-weight: bold;
   }
 `;
-export const InstructionsContainer = styled.div`
-  background: white; 
-  padding: 12px; 
-  font-size: 14px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 6px;
-  width: 100%;
-  margin-top: 10px;
-  margin-bottom: 20px;
-  box-sizing: border-box;
 
-  p {
-    color: lightslategrey;
-    font-size: 14px;
-    margin-bottom: 5px;
-  }
-`;
-export const InstructionsText = styled.p`
-  font-size: 14px;
-  margin-bottom: 10px;
-  font-weight: normal;
-  display: flex;
-  align-items: center;
-  color: gray;
-`;
+
 export const ItemsContainer = styled.div`
-  background: #ffffff;
-  border-radius: 5px;
-  padding: 1rem;
+
 `;
 export const StoryListContainer = styled.ul`
   list-style: none;
