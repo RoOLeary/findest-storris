@@ -39,6 +39,7 @@ export const Form = styled.form`
   margin-bottom: 10px;
   gap: 16px;
   align-items: stretch;
+  line-height: 64px; 
 `;
 export const InputContainer = styled.div<{ hasError: boolean }>`
   position: relative;

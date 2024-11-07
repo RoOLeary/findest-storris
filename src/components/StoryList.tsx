@@ -62,11 +62,8 @@ const StoryList = () => {
   }
 
   return (
-    <div className='w-full md:w-1/2 pt-8'>
+    <div className={`w-full md:w-1/2 pt-8 panel ${filteredStories.length > 0 ? 'show' : ''}`}>
 
-
-      
-        
           {filteredStories.length > 0 ? (
             filteredStories.map((story: Story) => (
               <StoryItem

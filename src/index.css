@@ -8,3 +8,15 @@ body {
 }
 
 
+.panel{
+  position: relative;
+  right: -100%;
+  transition: right 300ms ease-in-out;
+  padding: 1em; 
+  background: #f5f5f5;
+}
+
+/* Slide-in state: fully visible */
+.panel.show {
+  right: 0;
+}

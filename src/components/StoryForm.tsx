@@ -59,7 +59,7 @@ const StoryForm = ({ user }) => {
 
   return (
     <Form onSubmit={handleSubmit}>
-      As <Input
+      <label>As</label> <Input
           type="text"
           value={title}
           onChange={handleInputChange}
