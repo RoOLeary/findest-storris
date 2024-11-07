@@ -112,7 +112,7 @@ export const CheckIcon = styled.span<{ completed: boolean }>`
   font-size: 16px;
   transition: all 0.3s ease-in-out;
 `;
-export const TaskItemContainer = styled.li<{ isEditing: boolean }>`
+export const StoryItemContainer = styled.li<{ isEditing: boolean }>`
   display: flex;
   justify-content: space-between;
   flex-direction: ${(props) => (props.isEditing ? 'column' : 'row')};
@@ -135,19 +135,19 @@ export const TaskItemContainer = styled.li<{ isEditing: boolean }>`
     gap: 12px; 
   }
 `;
-export const TaskInfoContainer = styled.div`
+export const StoryInfoContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 5px; 
 `;
-export const TaskDetailsContent = styled.div<{ completed: boolean }>`
+export const StoryDetailsContent = styled.div<{ completed: boolean }>`
   opacity: ${(props) => (props.completed ? '0.5' : '1')};  
   text-decoration: ${(props) => (props.completed ? 'line-through' : 'none')};
   line-height: ${(props) => (props.completed ? 'normal' : '1.5rem')};  
   transition: opacity 0.3s ease-in-out, text-decoration 0.3s ease-in-out, line-height 0.3s ease-in-out; 
   width: 100%;
 `;
-export const TaskTitle = styled.span<{ completed: boolean }>`
+export const StoryTitle = styled.span<{ completed: boolean }>`
   font-weight: bold;
   color: ${(props) => (props.completed ? 'green' : 'inherit')};  
   cursor: pointer;
@@ -156,7 +156,7 @@ export const TaskTitle = styled.span<{ completed: boolean }>`
   align-items: center;  
   transition: all 0.3s ease-in-out;  
 `;
-export const TaskMeta = styled.div`
+export const StoryMeta = styled.div`
   font-size: 14px;
   color: #555;
   margin-top: 5px;
@@ -289,7 +289,7 @@ export const ItemsContainer = styled.div`
   border-radius: 5px;
   padding: 1rem;
 `;
-export const TaskListContainer = styled.ul`
+export const StoryListContainer = styled.ul`
   list-style: none;
   padding: 0;
   margin: 0;
@@ -308,7 +308,7 @@ export const FilterLabel = styled.label`
     display: none;
   }
 `;
-export const NoTasksMessage = styled.div`
+export const NoStoriesMessage = styled.div`
   padding: 20px;
   text-align: center;
   font-size: 18px;

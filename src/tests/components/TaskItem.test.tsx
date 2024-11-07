@@ -1,8 +1,8 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import TaskItem from '../../components/TaskItem';
-import { Task } from '../../types/task';
-import { useUpdateTaskMutation, useDeleteTaskMutation, useToggleTaskCompletionMutation } from '../../services/taskApi';
+import TaskItem from '../../components/StoryItem';
+import { Task } from '../../types/story';
+import { useUpdateTaskMutation, useDeleteTaskMutation, useToggleTaskCompletionMutation } from '../../services/storyApi';
 
 // Mock RTK Query hooks
 jest.mock('./../../services/taskApi', () => ({

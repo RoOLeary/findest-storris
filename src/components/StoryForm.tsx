@@ -1,32 +1,38 @@
 import { useState } from 'react';
 import { ClientButton, ClientButtonText, Form, Select, IconWrapper, InputContainer, Input, SelectButtonContainer,  ErrorMessage } from './StyledComponents';
-import { useAddTaskMutation } from '../services/taskApi';  // RTK Query hook for adding a task
+import { useAddStoryMutation } from '../services/storyApi';  // RTK Query hook for adding a task
 
-const TaskForm = ({ user }) => {
+const StoryForm = ({ user }) => {
   const [title, setTitle] = useState<string>(''); 
-  const [description, setDescription] = useState<string>(''); 
+  const [description, setDescription] = useState<string>('');
+  const [capability, setCapability] = useState<string>('');
+  const [role, setRole] = useState<string>('');
+  const [benefit, setBenefit] = useState<string>(''); 
   const [priority, setPriority] = useState<string>('default'); 
   const [hasError, setHasError] = useState<boolean>(false); 
   const [author] = useState<string>(user);
 
   // RTK Query mutation hook for adding a new task
-  const [addTask] = useAddTaskMutation();
+  const [addStory] = useAddStoryMutation();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     if (title.trim() || description.trim() || priority !== 'default') {
       try {
         // Call the mutation to add a new task
-        await addTask({
+        await addStory({
           title, description, priority, author,
-          completed: false, createdAt: new Date().toISOString()
+          completed: false, createdAt: new Date().toISOString(), capability, role, benefit
         }).unwrap();
         setTitle('');
         setDescription('');
+        setCapability('');
+        setRole('');
+        setBenefit('');
         setPriority('low');
         setHasError(false);
       } catch (error) {
-        console.log('Failed to add task');
+        console.log('Failed to add storii');
       }
     } else {
       setHasError(true);
@@ -58,20 +64,20 @@ const TaskForm = ({ user }) => {
           type="text"
           value={title}
           onChange={handleInputChange}
-          placeholder="Enter task title"
+          placeholder="Enter story title"
           hasError={hasError} // Pass error state to the input
         />
-        {hasError && <ErrorMessage>Silly Goose! You forgot to add a task!</ErrorMessage>}
+        {hasError && <ErrorMessage>Ooopsie! You forgot to add a task!</ErrorMessage>}
       </InputContainer>
       <InputContainer hasError={hasError}>
         <Input
           type="text"
           value={description}
           onChange={handleDescriptionChange}
-          placeholder="Enter task description"
+          placeholder="Enter story description"
           hasError={hasError} // Pass error state to the input
         />
-        {hasError && <ErrorMessage>Derp! You forgot to add a description!</ErrorMessage>}
+        {hasError && <ErrorMessage>Whoops! You forgot to add a description!</ErrorMessage>}
       </InputContainer>
       <SelectButtonContainer>
         <Select id="filter-task-priority" value={priority} onChange={handlePriorityChange}>
@@ -81,7 +87,7 @@ const TaskForm = ({ user }) => {
           <option value="low">Low</option>
         </Select>
         <ClientButton type="submit">
-          <ClientButtonText>Add Task</ClientButtonText>
+          <ClientButtonText>Add Story</ClientButtonText>
           <IconWrapper>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14.9 12.34">
               <path fill="currentColor" d="M.01,5.28H12.09c-.48,.13-1.54-1.08-2.38-1.94L7.7,1.27l1.23-1.27,5.97,6.17-5.97,6.17-1.23-1.27,1.9-1.97c.92-.95,1.77-1.94,2.48-2.03H0s.01-1.8,.01-1.8Z"></path>
@@ -93,4 +99,4 @@ const TaskForm = ({ user }) => {
   );
 };
 
-export default TaskForm;
+export default StoryForm;

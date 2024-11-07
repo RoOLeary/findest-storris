@@ -1,4 +1,4 @@
-export interface Task {
+export interface Story {
     id: string;
     title: string;
     description?: string;
@@ -7,4 +7,7 @@ export interface Task {
     author: string;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     createdAt: any;
+    capability?: string, 
+    role?: string,
+    benefit?: string
 }

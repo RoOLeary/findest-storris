@@ -1,11 +1,11 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import TaskList from '../../components/TaskList';
-import { useGetTaskListQuery, useDeleteTaskMutation, useToggleTaskCompletionMutation, useUpdateTaskMutation } from '../../services/taskApi';
+import TaskList from '../../components/StoryList.tsx';
+import { useGetTaskListQuery, useDeleteTaskMutation, useToggleTaskCompletionMutation, useUpdateTaskMutation } from '../../services/storyApi.ts';
 import { persistor } from '../../store';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
-import { taskApi } from '../../services/taskApi.ts';
+import { taskApi } from '../../services/storyApi.ts';
 
 // Mock RTK Query hooks but keep the original reducerPath and reducer
 jest.mock('./../../services/taskApi', () => ({

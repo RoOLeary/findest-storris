@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 import { store, persistor } from './store'
 import { AppContainer, Title, InstructionsContainer, SubTitle, InstructionsText } from './components/StyledComponents';
-import TaskList from './components/TaskList'
-import TaskForm from './components/TaskForm'
+import TaskList from './components/StoryList'
+import TaskForm from './components/StoryForm'
 import OverlayComponent from './components/Overlay'
 
 function App() {
@@ -34,7 +34,7 @@ function App() {
             <Title>Storri's:</Title>
             <InstructionsContainer>
               <SubTitle emph={true}>Welcome {userName}!</SubTitle>
-              <InstructionsText>User the interface below to Add, Edit, Update and Delete your stories. <br />When adding a task, you will automatically be shown as the task creator. <br />Tasks can be filtered by "All", "My Tasks", "Completed", and "Incomplete".</InstructionsText>
+              <InstructionsText>User the interface below to Add, Edit, Update and Delete your stories. <br />When adding a task, you will automatically be shown as the story creator. <br />Stories can be filtered by "All", "My Stories", "Completed", and "Incomplete".</InstructionsText>
             </InstructionsContainer>
             <SubTitle emph={true}>Add a New Task: </SubTitle>
             <TaskForm user={userName}/>

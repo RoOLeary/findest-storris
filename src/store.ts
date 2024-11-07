@@ -1,5 +1,5 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
-import { taskApi } from './services/taskApi';  // Import your taskApi
+import { storyApi } from './services/storyApi';  // Import your storyApi
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { createReduxHistoryContext } from 'redux-first-history';
 import { createBrowserHistory } from 'history';
@@ -19,7 +19,7 @@ const persistConfig = {
 // Combining reducers with persistence and RTK Query reducer
 const rootReducer = combineReducers({
   router: routerReducer,
-  [taskApi.reducerPath]: taskApi.reducer,  // Include RTK Query reducer
+  [storyApi.reducerPath]: storyApi.reducer,  // Include RTK Query reducer
 });
 
 // Persist the root reducer
@@ -30,7 +30,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,  // For persistence compatibility
-    }).concat([taskApi.middleware, routerMiddleware]),  // Concatenate RTK Query and router middleware
+    }).concat([storyApi.middleware, routerMiddleware]),  // Concatenate RTK Query and router middleware
 });
 
 // Set up listeners for RTK Query refetching
