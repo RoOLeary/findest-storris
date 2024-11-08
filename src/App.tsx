@@ -31,13 +31,16 @@ function App() {
         {!userName ? (
           <OverlayComponent onSubmitName={handleNameSubmit} />
         ) : (
-          <div className="flex flex-col md:flex-row justify-between p-6 gap-8">
-            <div className="w-full md:w-1/2">
-              <SubTitle emph={true}>Add a New Story: </SubTitle>
-              <StoryForm user={userName}/>
+          <>
+            <header className="bg-white p-4 md:p-6">[Logo]</header>
+            <div className="flex flex-col md:flex-row justify-between md:p-6 gap-8">
+              <div className="w-full md:w-1/2 bg-white p-6">
+                <SubTitle emph={true}>Add a New Story: </SubTitle>
+                <StoryForm user={userName}/>
+              </div>
+              <StoryList />
             </div>
-            <StoryList />
-          </div>
+          </>
         )}
       </PersistGate>
     </Provider>

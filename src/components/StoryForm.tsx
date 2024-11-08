@@ -83,12 +83,12 @@ const StoryForm = ({ user }) => {
       
       
       <SelectButtonContainer>
-        {/* <Select id="filter-task-priority" value={priority} onChange={handlePriorityChange}>
+        <Select id="filter-task-priority" value={priority} onChange={handlePriorityChange}>
           <option value="default">Default (Low)</option>
           <option value="high">High</option>
           <option value="medium">Medium</option>
           <option value="low">Low</option>
-        </Select> */}
+        </Select>
         <ClientButton type="submit">
           <ClientButtonText>Add Story</ClientButtonText>
           <IconWrapper>
